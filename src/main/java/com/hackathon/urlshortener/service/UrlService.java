@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.Optional;
 
 @Service
 public class UrlService {
@@ -16,14 +17,22 @@ public class UrlService {
     private static final String CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int SHORT_URL_LENGTH = 6;
 
-    private SecureRandom random = new SecureRandom();
+    private final SecureRandom random = new SecureRandom();
 
     public String shortenUrl(String originalUrl) {
+
+        Optional<Url> existingUrlOpt = urlRepository.findByOriginalUrl(originalUrl);
+        if (existingUrlOpt.isPresent()) {
+            return existingUrlOpt.get().getShortUrl();
+        }
+
         String shortUrl = generateShortUrl();
 
-        Url existingUrl = urlRepository.findByShortUrl(shortUrl);
-        if (existingUrl != null) {
-            return existingUrl.getShortUrl();
+        Optional<Url> existingOriginalUrl = urlRepository.findByShortUrl(shortUrl);
+
+        while (existingOriginalUrl.isPresent()) {
+            shortUrl = generateShortUrl();
+            existingOriginalUrl = urlRepository.findByShortUrl(shortUrl);
         }
 
         Url url = new Url();
@@ -35,8 +44,8 @@ public class UrlService {
     }
 
     public String getOriginalUrl(String shortUrl) {
-        Url url = urlRepository.findByShortUrl(shortUrl);
-        return url != null ? url.getOriginalUrl() : null;
+        Optional<Url> url = urlRepository.findByShortUrl(shortUrl);
+        return url.isPresent() ? url.get().getOriginalUrl() : null;
     }
 
     private String generateShortUrl() {

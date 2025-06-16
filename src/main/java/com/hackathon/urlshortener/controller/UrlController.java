@@ -2,6 +2,7 @@ package com.hackathon.urlshortener.controller;
 
 import com.hackathon.urlshortener.service.UrlService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -9,11 +10,8 @@ import java.io.IOException;
 @RestController
 public class UrlController {
 
-    private final UrlService urlService;
-
-    public UrlController(UrlService urlService) {
-        this.urlService = urlService;
-    }
+    @Autowired
+    private UrlService urlService;
 
     @PostMapping("/shorten")
     public String shortenUrl(@RequestParam String originalUrl) {
@@ -21,7 +19,7 @@ public class UrlController {
     }
 
     @GetMapping("/{shortUrl}")
-    public void redirectToOriginalUrl(@PathVariable String shortUrl, HttpServletResponse response) throws IOException {
+        public void redirectToOriginalUrl(@PathVariable String shortUrl, HttpServletResponse response) throws IOException {
         String originalUrl = urlService.getOriginalUrl(shortUrl);
         if (originalUrl != null) {
             response.sendRedirect(originalUrl);
