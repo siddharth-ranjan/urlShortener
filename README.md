@@ -98,4 +98,4 @@ com.hackathon.urlshortener
 
 ### Siddharth Ranjan
 ### 📧 siddharthranjan0909@gmail.com
-### 🔗 [GitHub Profile]("https://github.com/siddharth-ranjan")
+### 🔗 [GitHub Profile](https://github.com/siddharth-ranjan)
