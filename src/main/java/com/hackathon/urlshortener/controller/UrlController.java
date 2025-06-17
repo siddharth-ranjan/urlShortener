@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 public class UrlController {
@@ -14,11 +15,14 @@ public class UrlController {
     private UrlService urlService;
 
     @PostMapping("/shorten")
-    public String shortenUrl(@RequestParam String originalUrl) {
-        return urlService.shortenUrl(originalUrl);
+    public Map<String, String> shortenUrl(@RequestBody Map<String, String> request) {
+        String originalUrl = request.get("originalUrl");
+        String shortUrl = urlService.shortenUrl(originalUrl);
+        System.out.println(shortUrl);
+        return Map.of("shortUrl", shortUrl);
     }
 
-    @GetMapping("/{shortUrl}")
+    @GetMapping("/x/{shortUrl}")
         public void redirectToOriginalUrl(@PathVariable String shortUrl, HttpServletResponse response) throws IOException {
         String originalUrl = urlService.getOriginalUrl(shortUrl);
         if (originalUrl != null) {
