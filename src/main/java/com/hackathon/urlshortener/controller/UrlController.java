@@ -18,7 +18,6 @@ public class UrlController {
     public Map<String, String> shortenUrl(@RequestBody Map<String, String> request) {
         String originalUrl = request.get("originalUrl");
         String shortUrl = urlService.shortenUrl(originalUrl);
-        System.out.println(shortUrl);
         return Map.of("shortUrl", shortUrl);
     }
 
